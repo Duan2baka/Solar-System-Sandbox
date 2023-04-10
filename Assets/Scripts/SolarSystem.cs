@@ -33,7 +33,6 @@ public class SolarSystem : MonoBehaviour
                 float m2 = b.GetComponent<Rigidbody>().mass;
                 float r = Vector3.Distance(a.transform.position, b.transform.position);
                 a.transform.LookAt(b.transform);
-
                 a.GetComponent<Rigidbody>().velocity += a.transform.right * Mathf.Sqrt((G * m2) / r);
             }
         }
@@ -54,7 +53,7 @@ public class SolarSystem : MonoBehaviour
     void Gravity(){
         celestials = GameObject.FindGameObjectsWithTag("Celestial");
         foreach(GameObject a in celestials){
-            if(a.name == "Sun") continue;
+            if(a.name == "Sun" && freeze) continue;
             foreach(GameObject b in celestials){
                 if(!a.Equals(b)){
                     float m1 = a.GetComponent<Rigidbody>().mass;
@@ -69,9 +68,8 @@ public class SolarSystem : MonoBehaviour
 
     void InitialVelocity(){
         foreach(GameObject a in celestials){
-            if(a.name == "Sun") continue;
             foreach(GameObject b in celestials){
-                if(!a.Equals(b)){
+                if(!a.Equals(b) || !freeze){
                     float m2 = b.GetComponent<Rigidbody>().mass;
                     float r = Vector3.Distance(a.transform.position, b.transform.position);
                     a.transform.LookAt(b.transform);

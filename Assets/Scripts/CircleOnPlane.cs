@@ -26,7 +26,7 @@ public class CircleOnPlane : MonoBehaviour
     void Start()
     {
         addPlanet = false;
-        pointA = GameObject.Find("Sun").transform;
+        //pointA = GameObject.Find("Sun").transform;
         //pointB = GameObject.Find("Earth").transform;
         //pointC = GameObject.Find("Venus").transform;
         cameraTransform = GameObject.FindGameObjectWithTag("MainCamera").transform;

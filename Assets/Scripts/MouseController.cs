@@ -23,7 +23,7 @@ public class MouseController : MonoBehaviour
             {
                 if (EventSystem.current.IsPointerOverGameObject())
                 {
-                    Debug.Log("Clicked on UI.");
+                    // Debug.Log("Clicked on UI.");
                 }
                 else
                 {
@@ -31,7 +31,7 @@ public class MouseController : MonoBehaviour
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit))
                     {
-                        Debug.Log("Clicked on " + hit.collider.gameObject.name + " in scene.");
+                        // Debug.Log("Clicked on " + hit.collider.gameObject.name + " in scene.");
                     }
                     else{
                         Vector3 normal = new Vector3(0f, 1f, 0f);
@@ -44,7 +44,7 @@ public class MouseController : MonoBehaviour
                             GameObject.Find("CircleOnPlane").GetComponent<CircleOnPlane>().addPlanet = false;
                             chk = false;
                             GameObject spawnedPrefab = Instantiate(prefab, hitPoint, Quaternion.identity);
-                            spawnedPrefab.GetComponent<Label>().camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+                            spawnedPrefab.GetComponent<Label>().myCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
                         }
                     }
                 }

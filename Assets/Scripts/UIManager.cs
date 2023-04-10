@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
     public GameObject[] prefabs;
     GameObject[] celestials;
     public Sprite roundRectSprite;
-    CameraControl camera;
+    CameraControl myCamera;
     bool freeze = true;
 
     void Start()
@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
         // 隐藏行星列表
         planetList.SetActive(false);
         selectList.SetActive(false);
-        camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraControl>();
+        myCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraControl>();
         // 为菜单按钮添加点击事件
         menuButton.onClick.AddListener(OnMenuButtonClick);
         freezeButton.onClick.AddListener(OnFreezeButtonClick);
@@ -32,8 +32,8 @@ public class UIManager : MonoBehaviour
         selectButton.onClick.AddListener(OnSelectListClick);
         resetButton.onClick.AddListener(OnResetButtonClick);
         mainMenuButton.onClick.AddListener(OnMainMenuButtonClick);
-        freeze = true;
-
+        freeze = GameObject.Find("SolarSystem").GetComponent<SolarSystem>().freeze;
+        freezeButton.transform.Find("Text").GetComponent<Text>().text = freeze ? "Unfreeze the sun" : "Freeze the sun";
     }
 
     void OnResetButtonClick(){
@@ -46,9 +46,9 @@ public class UIManager : MonoBehaviour
         celestials = GameObject.FindGameObjectsWithTag("Celestial");
         foreach (Transform child in planetList.transform)
             Destroy(child.gameObject);
+        Debug.Log("123");
 
         foreach(GameObject a in celestials){
-
             // create the button
             GameObject buttonObject = new GameObject(a.name + "Button");
             RectTransform rectTransform = buttonObject.AddComponent<RectTransform>();
@@ -176,9 +176,9 @@ public class UIManager : MonoBehaviour
     {
         GameObject planet = GameObject.Find(planetName);
         if (planet != null){
-            camera.pivot = planet.transform;
-            camera.target = planet.transform;
-            camera.setTargetDistance(planet.transform.localScale.x * 6f);
+            myCamera.pivot = planet.transform;
+            myCamera.target = planet.transform;
+            myCamera.setTargetDistance(planet.transform.localScale.x * 6f);
         }
         planetList.SetActive(false);
     }

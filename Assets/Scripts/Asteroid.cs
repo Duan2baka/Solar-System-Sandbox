@@ -16,7 +16,7 @@ public class Asteroid : MonoBehaviour
     }
 
     private void OnCollisionEnter(Collision collision){
-        Debug.Log(collision.gameObject.name);
+        // Debug.Log(collision.gameObject.name);
         if (collision.gameObject.CompareTag("Celestial")){
             Rigidbody otherRb = collision.gameObject.GetComponent<Rigidbody>();
             float newMass = rb.mass + otherRb.mass;

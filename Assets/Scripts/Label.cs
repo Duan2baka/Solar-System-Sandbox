@@ -6,7 +6,7 @@ public class Label : MonoBehaviour
 {
     //    public Transform cube;
 
-    public Camera camera;
+    public Camera myCamera;
 
     public TrailRenderer trailRenderer;
     public float maxTrailWidth = 0.5f;
@@ -15,23 +15,30 @@ public class Label : MonoBehaviour
     bool isShowTip;
     public bool WindowShow = false;
     Rigidbody rb;
-    Vector2 windowSize = new Vector2(300f, 170f);
-
+    Vector2 windowSize = new Vector2(300f, 200f);
+    private string massString = "";
+    private string radiusString = "";
+    private string velocityString = "";
     float radius;
+    private bool messageShow = false;
+    private string message = "";
+    private float newMass, newVelocity, newRadius;
 
     void Start()
     {
         if(this.name != "Sun") trailRenderer = transform.GetComponent<TrailRenderer>();
         isShowTip = true;
         radius = GetComponent<Collider>().bounds.size.x;
-        if(this.name == "Sun") radius = radius + 100;
+        if(this.name == "Sun" || this.name == "Planet1" || this.name == "Planet2" || this.name == "Sun(Clone)") radius = radius + 100;
         rb = GetComponent<Rigidbody>();
+        messageShow = false;
 		//npcHeight = GetComponent<Collider>().bounds.size.x ;
     }
     private void Update() {
-        if(!camera) camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        fix_input();
+        if(!myCamera) myCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         if(this.name == "Sun" || this.name == "Sun(Clone)") return;
-        var dis = Vector3.Distance(camera.transform.position, transform.position) - radius;
+        var dis = Vector3.Distance(myCamera.transform.position, transform.position) - radius;
         var width = Mathf.Min(dis / 100f, 1f);
 
         // 获取 TrailRenderer 的 widthCurve 属性
@@ -83,21 +90,21 @@ public class Label : MonoBehaviour
         {
             //Debug.Log(this.name);
             RaycastHit hit;
-            if (Physics.Linecast(transform.position, camera.transform.position, out hit, ~(1 << LayerMask.NameToLayer("Celestial")))){
+            if (Physics.Linecast(transform.position, myCamera.transform.position, out hit, ~(1 << LayerMask.NameToLayer("Celestial")))){
                 // Debug.Log("blocked:"+hit.transform.name);
                 return;
             }
 
             Vector3 worldPosition = new Vector3 (transform.position.x, transform.position.y,transform.position.z);
             
-            Vector2 position = camera.WorldToScreenPoint(worldPosition);
+            Vector2 position = myCamera.WorldToScreenPoint(worldPosition);
 
-            var distance = Vector3.Distance(transform.position, camera.transform.position);
+            var distance = Vector3.Distance(transform.position, myCamera.transform.position);
 
             //get 2d position
 
-            var frustumHeight = 2.0f * distance * Mathf.Tan(camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
-            var frustumWidth = frustumHeight * camera.aspect;
+            var frustumHeight = 2.0f * distance * Mathf.Tan(myCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            var frustumWidth = frustumHeight * myCamera.aspect;
             var true_width = 1.0f * Screen.width * radius / frustumWidth;
 
             //Debug.Log(Screen.height);
@@ -125,21 +132,21 @@ public class Label : MonoBehaviour
         }
         if (WindowShow){
             RaycastHit hit;
-            if (Physics.Linecast(transform.position, camera.transform.position, out hit, ~(1 << LayerMask.NameToLayer("Celestial")))){
+            if (Physics.Linecast(transform.position, myCamera.transform.position, out hit, ~(1 << LayerMask.NameToLayer("Celestial")))){
                 // Debug.Log("blocked:"+hit.transform.name);
                 return;
             }
 
             Vector3 worldPosition = new Vector3 (transform.position.x, transform.position.y,transform.position.z);
             
-            Vector2 position = camera.WorldToScreenPoint(worldPosition);
+            Vector2 position = myCamera.WorldToScreenPoint(worldPosition);
 
-            var distance = Vector3.Distance(transform.position, camera.transform.position);
+            var distance = Vector3.Distance(transform.position, myCamera.transform.position);
 
             //get 2d position
 
-            var frustumHeight = 2.0f * distance * Mathf.Tan(camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
-            var frustumWidth = frustumHeight * camera.aspect;
+            var frustumHeight = 2.0f * distance * Mathf.Tan(myCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            var frustumWidth = frustumHeight * myCamera.aspect;
             var true_width = 1.0f * Screen.width * radius / frustumWidth;
 
             //Debug.Log(Screen.height);
@@ -148,20 +155,76 @@ public class Label : MonoBehaviour
             position = new Vector2 (Mathf.Min(position.x + true_width, Screen.width - windowSize.x), Mathf.Min(Screen.height - position.y + (50 / 2.0f), Screen.height - windowSize.y));
             GUI.Window(0, new Rect(position.x, position.y, windowSize.x, windowSize.y), MyWindow, this.name);
         }
+        
+        if (messageShow){
+            float screenWidth = Screen.width;
+            float screenHeight = Screen.height;
+            float windowWidth = 200;
+            float windowHeight = 80;
+            float windowX = (screenWidth - windowWidth) / 2;
+            float windowY = (screenHeight - windowHeight) / 2;
+
+            // Set window position
+            GUI.Window(0, new Rect(windowX, windowY, windowWidth, windowHeight), (int id) => {
+                // Draw messages
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(message);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                // Draw back button
+                if (GUILayout.Button("Back")) {
+                    messageShow = false;
+                }
+            }, "Info Window");
+        }
     }
- 
+    private bool check_input(ref float mass, ref float velocity, ref float radius){
+        return float.TryParse(massString, out mass) && float.TryParse(velocityString, out velocity) 
+        && float.TryParse(radiusString, out radius);
+    }
     //dialog
     void MyWindow(int WindowID)
     {
         //float maxwidth = 0f;
         GUILayout.Label("Position: " + (transform.position - GameObject.Find("Sun").transform.position));
-        GUILayout.Label("Radius: " + transform.localScale.x * 2000f);
-        GUILayout.Label("Mass(earth): " + rb.mass);
-        GUILayout.Label("Velocity: " + rb.velocity.magnitude);
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Radius: ", GUILayout.ExpandWidth(true));
+        radiusString = GUILayout.TextField(radiusString, GUILayout.MaxWidth(150));
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Mass(earth): ", GUILayout.ExpandWidth(true));
+        massString = GUILayout.TextField(massString, GUILayout.MaxWidth(150));
+        GUILayout.EndHorizontal();
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Velocity: ", GUILayout.ExpandWidth(true));
+        velocityString = GUILayout.TextField(velocityString, GUILayout.MaxWidth(150));
+        GUILayout.EndHorizontal();
 
+        if(GUILayout.Button("Apply")){
+            if(!check_input(ref newMass, ref newVelocity, ref newRadius)){
+                WindowShow = false;
+                messageShow = true;
+                message = "Input error!";
+            }
+            else{
+                WindowShow = false;
+                // Debug.Log("" + newVelocity + " " + rb.velocity.magnitude);
+                if(rb.velocity.magnitude != 0f){
+                    rb.velocity = rb.velocity * (newVelocity / rb.velocity.magnitude);
+                }
+                rb.mass = newMass;
+                transform.localScale *= ((newRadius / 2000f) / transform.localScale.x);
+                messageShow = true;
+                message = "Applied successfully!";
+            }
+        }
         if(GUILayout.Button("Close")){
             WindowShow = false;
         }
+
         /*
         // 获取每个 GUI 元素的矩形大小
         Rect positionLabelRect = GUILayoutUtility.GetLastRect();
@@ -183,14 +246,33 @@ public class Label : MonoBehaviour
         
         windowSize = new Vector2(windowWidth, windowHeight);
         */
-        
     }
+
+    void fix_input(){
+        if (!System.Text.RegularExpressions.Regex.IsMatch(massString, "^[0-9.]*$")){
+            // Remove non-numeric characters
+            massString = System.Text.RegularExpressions.Regex.Replace(massString, "[^0-9.]", "");
+        }
+        if (!System.Text.RegularExpressions.Regex.IsMatch(radiusString, "^[0-9.]*$")){
+            // Remove non-numeric characters
+            radiusString = System.Text.RegularExpressions.Regex.Replace(radiusString, "[^0-9.]", "");
+        }
+        if (!System.Text.RegularExpressions.Regex.IsMatch(velocityString, "^[0-9.]*$")){
+            // Remove non-numeric characters
+            velocityString = System.Text.RegularExpressions.Regex.Replace(velocityString, "[^0-9.]", "");
+        }
+    }
+
     //鼠标点击事件
     void OnMouseDown()
     {
         if (WindowShow)
             WindowShow = false;
-        else
+        else{
             WindowShow = true;
+            massString = "" + rb.mass;
+            radiusString = "" + transform.localScale.x * 2000f;
+            velocityString = "" + rb.velocity.magnitude;
+        }
     }
 }

@@ -57,7 +57,7 @@ public class CameraControl : MonoBehaviour
 
                 float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 
-                targetDistance += deltaMagnitudeDiff * zoomSpeed;
+                targetDistance += deltaMagnitudeDiff * zoomSpeed / 10;
                 targetDistance = Mathf.Clamp(targetDistance, minDistance, maxDistance);
             }
 
