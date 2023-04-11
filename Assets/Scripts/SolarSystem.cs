@@ -7,6 +7,7 @@ public class SolarSystem : MonoBehaviour
     readonly float G = 100f;
     GameObject[] celestials;
     public bool freeze = true;
+    public bool doubleStar = false;
 
 
     // Start is called before the first frame update
@@ -67,14 +68,14 @@ public class SolarSystem : MonoBehaviour
     }
 
     void InitialVelocity(){
+        Debug.Log(doubleStar);
         foreach(GameObject a in celestials){
             foreach(GameObject b in celestials){
-                if(!a.Equals(b) || !freeze){
+                if(!a.Equals(b)){
                     float m2 = b.GetComponent<Rigidbody>().mass;
                     float r = Vector3.Distance(a.transform.position, b.transform.position);
                     a.transform.LookAt(b.transform);
-
-                    a.GetComponent<Rigidbody>().velocity += a.transform.right * Mathf.Sqrt((G * m2) / r);
+                    a.GetComponent<Rigidbody>().velocity += a.transform.right * Mathf.Sqrt((G * m2) / (doubleStar ? (r * 2f) : r));
                 }
             }
         }

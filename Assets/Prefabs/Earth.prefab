@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8e564af22d6004c99076b471e28da2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
+  myCamera: {fileID: 0}
   trailRenderer: {fileID: 0}
   maxTrailWidth: 0.5
   widthCurveTime: 0

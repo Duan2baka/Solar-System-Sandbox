@@ -4,7 +4,7 @@ public class Asteroid : MonoBehaviour
 {
     public float mass;
     //大行星吞噬小行星的速度阈值
-    public float englufVelocityThreshold = 10f;
+    public float englufVelocityThreshold = 2f;
 
     private Rigidbody rb;
 

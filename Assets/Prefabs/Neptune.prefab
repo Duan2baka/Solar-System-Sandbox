@@ -176,6 +176,7 @@ GameObject:
   - component: {fileID: 5152654294315954188}
   - component: {fileID: 5152654294315954189}
   - component: {fileID: 5152654294315954186}
+  - component: {fileID: 554182749}
   m_Layer: 0
   m_Name: Neptune
   m_TagString: Celestial
@@ -373,11 +374,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8e564af22d6004c99076b471e28da2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
+  myCamera: {fileID: 0}
   trailRenderer: {fileID: 0}
   maxTrailWidth: 0.5
   widthCurveTime: 0
   WindowShow: 0
+--- !u!114 &554182749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5152654294315954187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 146b1ee6c1019764eaf49052386c27ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 0
+  englufVelocityThreshold: 2
 --- !u!1 &5152654294730011620
 GameObject:
   m_ObjectHideFlags: 0

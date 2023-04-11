@@ -13,11 +13,16 @@ public class MenuUIManager : MonoBehaviour
     void Start()
     {
         solarButton.onClick.AddListener(OnSolarButtonClick);
+        doubleButton.onClick.AddListener(OnDoubleButtonClick);
         quitButton.onClick.AddListener(OnQuitButtonClick);
     }
 
     void OnSolarButtonClick(){
         SceneManager.LoadScene("SolarSystem");
+    }
+
+    void OnDoubleButtonClick(){
+        SceneManager.LoadScene("DoubleStar");
     }
     
     void OnQuitButtonClick(){

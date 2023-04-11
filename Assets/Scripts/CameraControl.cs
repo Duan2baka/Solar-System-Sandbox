@@ -43,8 +43,10 @@ public class CameraControl : MonoBehaviour
         if (pivot) //如果存在设定的目标
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
-            float tmp = distance - target.GetComponent<Collider>().bounds.size.x;
-            zoomSpeed = Mathf.Clamp(tmp * 0.1f,10f,10000f);
+            if(GameObject.Find("MiddlePoint") == null){
+                float tmp = distance - target.GetComponent<Collider>().bounds.size.x;
+                zoomSpeed = Mathf.Clamp(tmp * 0.1f,10f,10000f);
+            }
             if (Input.touchCount == 2){
                 Touch touchZero = Input.GetTouch(0);
                 Touch touchOne = Input.GetTouch(1);
@@ -63,7 +65,9 @@ public class CameraControl : MonoBehaviour
 
             if (scroll > 0.0f) targetDistance -= zoomSpeed;  
             else if (scroll < 0.0f) targetDistance +=zoomSpeed;
-            minDistance = pivot.gameObject.GetComponent<SphereCollider>().radius * 2.0f;
+            if(GameObject.Find("MiddlePoint") == null){
+                minDistance = pivot.gameObject.GetComponent<SphereCollider>().radius * 2.0f;
+            }
             targetDistance = Mathf.Clamp(targetDistance, minDistance, maxDistance);      
             if (Input.GetMouseButton(1) || Input.GetMouseButton(0) && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))){
                 targetX += Input.GetAxis("Mouse X") * xSpeed * 0.02f;
