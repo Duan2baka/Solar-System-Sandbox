@@ -15,7 +15,7 @@ public class Label : MonoBehaviour
     bool isShowTip;
     public bool WindowShow = false;
     Rigidbody rb;
-    Vector2 windowSize = new Vector2(300f, 200f);
+    Vector2 windowSize = new Vector2(100f, 150f);
     private string massString = "";
     private string radiusString = "";
     private string velocityString = "";
@@ -23,6 +23,7 @@ public class Label : MonoBehaviour
     private bool messageShow = false;
     private string message = "";
     private float newMass, newVelocity, newRadius;
+    public float scale = 2.0f;
 
     void Start()
     {
@@ -32,6 +33,7 @@ public class Label : MonoBehaviour
         if(this.name == "Sun" || this.name == "Planet1" || this.name == "Planet2" || this.name == "Sun(Clone)") radius = radius + 100;
         rb = GetComponent<Rigidbody>();
         messageShow = false;
+        windowSize = Vector2.Scale(windowSize, new Vector2(Screen.width / 800f, Screen.height / 600f));
 		//npcHeight = GetComponent<Collider>().bounds.size.x ;
     }
     private void Update() {
@@ -86,6 +88,14 @@ public class Label : MonoBehaviour
     }
     void OnGUI()
     {
+        float scaledWidth = Screen.width * scale;
+        float scaledHeight = Screen.height * scale;
+        // 计算缩放后的位置，使窗口居中
+        float xPos = (Screen.width - scaledWidth) / 2;
+        float yPos = (Screen.height - scaledHeight) / 2;
+
+        // 缩放窗口及其内容
+        GUI.matrix = Matrix4x4.TRS(new Vector3(xPos, yPos, 0), Quaternion.identity, new Vector3(scale, scale, 1));
         if (isShowTip)
         {
             //Debug.Log(this.name);
@@ -159,8 +169,8 @@ public class Label : MonoBehaviour
         if (messageShow){
             float screenWidth = Screen.width;
             float screenHeight = Screen.height;
-            float windowWidth = 200;
-            float windowHeight = 80;
+            float windowWidth = 100 * (Screen.width / 800f);
+            float windowHeight = 60 * (Screen.height / 600f);
             float windowX = (screenWidth - windowWidth) / 2;
             float windowY = (screenHeight - windowHeight) / 2;
 
@@ -191,16 +201,16 @@ public class Label : MonoBehaviour
         
         GUILayout.BeginHorizontal();
         GUILayout.Label("Radius: ", GUILayout.ExpandWidth(true));
-        radiusString = GUILayout.TextField(radiusString, GUILayout.MaxWidth(150));
+        radiusString = GUILayout.TextField(radiusString, GUILayout.MaxWidth(40 * (Screen.width / 800f)));
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
         GUILayout.Label("Mass(earth): ", GUILayout.ExpandWidth(true));
-        massString = GUILayout.TextField(massString, GUILayout.MaxWidth(150));
+        massString = GUILayout.TextField(massString, GUILayout.MaxWidth(40 * (Screen.width / 800f)));
         GUILayout.EndHorizontal();
         
         GUILayout.BeginHorizontal();
         GUILayout.Label("Velocity: ", GUILayout.ExpandWidth(true));
-        velocityString = GUILayout.TextField(velocityString, GUILayout.MaxWidth(150));
+        velocityString = GUILayout.TextField(velocityString, GUILayout.MaxWidth(40 * (Screen.width / 800f)));
         GUILayout.EndHorizontal();
 
         if(GUILayout.Button("Apply")){
